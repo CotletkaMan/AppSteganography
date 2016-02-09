@@ -13,7 +13,6 @@ public abstract class ActionControl extends JProgressBar {
 
     public ActionControl(){
         setOrientation(VERTICAL);
-        setIndeterminate(true);
         setIgnoreRepaint(false);
     }
     public abstract void runAlgorithm(Component component , Algorithm algorithm);
