@@ -36,9 +36,17 @@ public class Controller extends JPanel implements ButtonActioner {
                 actionControl = new ConfigActionControl();
                 break;
         }
-        this.add(actionControl , BorderLayout.CENTER);
-        this.revalidate();
-        actionControl.runAlgorithm(tabbedPane.getSelectedComponent() , bottomPanel.getSelected());
+        removeAll();
+        add(actionControl, BorderLayout.CENTER);
+        repaint();
+        revalidate();
+
+        new Thread(new Runnable() {
+            public void run() {
+                actionControl.runAlgorithm(tabbedPane.getSelectedComponent(), bottomPanel.getSelected());
+            }
+        }).start();
+
     }
 
 }

@@ -111,7 +111,7 @@ public class LSB extends ConfigurableAlgorithm {
                     case MAIN:
                         BitSet bitSet = BitSet.valueOf(new byte[]{block.getValue()[block.getValue().length - 1]});
                         if(bitOutput.write(bitSet , countBit) == 0){
-                            outputStream.close();
+                            bitOutput.close();
                             initKey = false;
                             return 0;
                         }
@@ -120,7 +120,7 @@ public class LSB extends ConfigurableAlgorithm {
                 return block.getValue().length;
             }
             else{
-                outputStream.close();
+                bitOutput.close();
                 initKey = false;
             }
         }

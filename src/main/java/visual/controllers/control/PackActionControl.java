@@ -4,6 +4,7 @@ import logic.algorithms.Algorithm;
 import logic.conteiner.fabricConteiner;
 import visual.tabbedPanels.Producer;
 
+import javax.swing.*;
 import java.io.File;
 import java.awt.*;
 
@@ -19,11 +20,14 @@ public class PackActionControl extends ActionControl {
         int maxSize = (int)algorithm.getConteiner().getFile().length();
         this.setMaximum(maxSize);
         for(int i = 0 ; algorithm.hide() > 0 ; i++){
-            if((i + 1) % this.freqency == 0)
-                update(algorithm.getCountBitRead());
+            if((i + 1) % this.freqency == 0) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        setValue(algorithm.getCountBitRead());
+                        repaint();
+                    }
+                });
+            }
         }
-    }
-    private void update(int value){
-        this.setValue(value);
     }
 }
