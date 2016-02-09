@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class MainFrame extends JFrame {
     private JTabbedPane tabbedPane;
     private BottomPanel bottomPanel;
+    private Controller controller;
 
 
     public MainFrame(int width , int height){
@@ -40,11 +41,13 @@ public class MainFrame extends JFrame {
         list.add(new LSB());
 
         bottomPanel = new BottomPanel(list);
-        bottomPanel.setAction(new Controller(tabbedPane , bottomPanel));
+        controller = new Controller(tabbedPane , bottomPanel);
+        bottomPanel.setAction(controller);
     }
 
     private void configuration(){
         add(tabbedPane , BorderLayout.CENTER);
+        add(controller , BorderLayout.EAST);
         add(bottomPanel , BorderLayout.SOUTH);
     }
 }

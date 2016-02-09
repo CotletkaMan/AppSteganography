@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.BitSet;
+import java.util.Iterator;
 import java.util.Properties;
 
 /**
@@ -22,6 +23,11 @@ import java.util.Properties;
  */
 public class LSB extends ConfigurableAlgorithm {
     private int countBit = 2;
+    private BufferedBitInput bitInput;
+    private BufferedBitOutput bitOutput;
+    private BufferedOutputStream outputStream;
+    private Iterator<Pair<TypeBlocks, byte[]>> blocksIterator;
+    private boolean initKey = false;
 
     public LSB(){
         nameAlgorithm = "LSB";
@@ -50,55 +56,77 @@ public class LSB extends ConfigurableAlgorithm {
         }
     }
 
-    protected void directTransform(){
-        read();
+    protected int directTransform(){
         try {
-            BufferedBitInput bitInput = new EndedBufferedBitInput(new FileInputStream(hidingFile) , codeSplit);
-            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destinationPath + "/" + conteiner.getName()));
-            for(Pair<TypeBlocks, byte[]> block: conteiner){
-                switch (block.getKey()){
-                    case MAIN:
-                        BitSet bitSet = new BitSet(countBit);
-                        int length = bitInput.read(bitSet , countBit);
-                        block.getValue()[block.getValue().length - 1] &= ((byte)(-1 << length));
-                        byte[] data = bitSet.toByteArray();
-                        if(data.length != 0) {
-                            block.getValue()[block.getValue().length - 1] |= data[0];
-                        }
-                        break;
-                }
-                outputStream.write(block.getValue());
+            if(!initKey){
+                read();
+                bitInput = new EndedBufferedBitInput(new FileInputStream(hidingFile), codeSplit);
+                outputStream = new BufferedOutputStream(new FileOutputStream(destinationPath + "/" + conteiner.getName()));
+                blocksIterator = conteiner.iterator();
+                initKey = true;
             }
-            BitSet bitSet = new BitSet(1);
-            if(bitInput.read(bitSet , 1) > 0) {
-                LOG.info("Контейнер не достаточной длины. Записана не вся информация");
-            }
-            bitInput.close();
-            outputStream.close();
+           if(blocksIterator.hasNext()){
+               Pair<TypeBlocks , byte[]> block = blocksIterator.next();
+               switch (block.getKey()){
+                   case MAIN:
+                       BitSet bitSet = new BitSet(countBit);
+                       int length = bitInput.read(bitSet , countBit);
+                       block.getValue()[block.getValue().length - 1] &= ((byte)(-1 << length));
+                       byte[] data = bitSet.toByteArray();
+                       if(data.length != 0) {
+                           block.getValue()[block.getValue().length - 1] |= data[0];
+                       }
+                       break;
+               }
+               outputStream.write(block.getValue());
+               return block.getValue().length;
+           }
+           else{
+               BitSet bitSet = new BitSet(1);
+               if(bitInput.read(bitSet , 1) > 0)
+                   LOG.info("Контейнер не достаточной длины. Записана не вся информация");
+               bitInput.close();
+               outputStream.close();
+               initKey = false;
+               write();
+           }
         }
         catch (IOException e){
             LOG.info("LSB: Error in pack document");
         }
-        write();
+        return 0;
     }
 
-    protected void backTransform(){
-        read();
+    protected int backTransform(){
         try {
-            BufferedBitOutput outputStream = new EndedBufferedBitOutput(new FileOutputStream(destinationPath + "/" + conteiner.getName().split("[.]")[0]) , codeSplit);
-        End:for (Pair<TypeBlocks, byte[]> block : conteiner) {
+            if(!initKey){
+                read();
+                bitOutput = new EndedBufferedBitOutput(new FileOutputStream(destinationPath + "/" + conteiner.getName().split("[.]")[0]) , codeSplit);
+                blocksIterator = conteiner.iterator();
+                initKey = true;
+            }
+            if(blocksIterator.hasNext()){
+                Pair<TypeBlocks, byte[]> block = blocksIterator.next();
                 switch (block.getKey()) {
                     case MAIN:
                         BitSet bitSet = BitSet.valueOf(new byte[]{block.getValue()[block.getValue().length - 1]});
-                        if(outputStream.write(bitSet , countBit) == 0)
-                            break End;
+                        if(bitOutput.write(bitSet , countBit) == 0){
+                            outputStream.close();
+                            initKey = false;
+                            return 0;
+                        }
                         break;
                 }
+                return block.getValue().length;
             }
-            outputStream.close();
+            else{
+                outputStream.close();
+                initKey = false;
+            }
         }
         catch(IOException e){
             LOG.info("LSB: Error in unpack document");
         }
+        return 0;
     }
 }

@@ -3,6 +3,7 @@ package logic.conteiner;
 import javafx.util.Pair;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,15 +19,6 @@ public class WavConteiner extends Conteiner{
     public WavConteiner(File file) throws IOException{
         super(file);
         typesFiles = TypesFiles.WAV;
-        readHeader();
-    }
-
-    private void readHeader() throws IOException{
-        inputStream.skip(34);
-        byte[] data = new byte[2];
-        inputStream.read(data);
-        bitPerSample = (((int)data[1]) << 8) | (int)data[0];
-        inputStream.skip(-36);
     }
 
     private Pair<TypeBlocks , byte[]> readFile(){
@@ -34,8 +26,9 @@ public class WavConteiner extends Conteiner{
             byte[] data;
             if(readHeader) {
                 data = new byte[64];
-                readHeader = false;
                 inputStream.read(data);
+                bitPerSample = (((int)data[35]) << 8) | (int)data[34];
+                readHeader = false;
                 return new Pair<TypeBlocks, byte[]>(TypeBlocks.COMMON, data);
             }
             else {

@@ -15,6 +15,8 @@ public abstract class Algorithm {
     protected String destinationPath = null;
     protected byte codeSplit = 1;
 
+    private int countBitRead = 0;
+
     protected String nameAlgorithm = null;
 
     public Algorithm setConteiner(Conteiner conteiner){
@@ -22,9 +24,21 @@ public abstract class Algorithm {
         return this;
     }
 
+    public Conteiner getConteiner(){
+        return conteiner;
+    }
+
     public Algorithm setHidingFile(File file){
         hidingFile = file;
         return this;
+    }
+
+    public File getHidingFile(){
+        return hidingFile;
+    }
+
+    public String getDestinationPath(){
+        return destinationPath;
     }
 
     public Algorithm setDestinationPath(String destinationPath){
@@ -40,18 +54,26 @@ public abstract class Algorithm {
         return (conteiner != null) && (hidingFile != null) && (destinationPath != null) && (hidingFile.exists());
     }
 
-    abstract protected void directTransform();
-    abstract protected void backTransform();
+    abstract protected int directTransform();
+    abstract protected int backTransform();
 
-    public void hide(){
-        if(checkConditions())
-            directTransform();
+    public int hide(){
+        if(checkConditions()) {
+            int length = directTransform();
+            countBitRead += length;
+            return length;
+        }
         else
             LOG.info("For this method not set begin conditions");
+        return 0;
     }
 
-    public void unhide(){
-        backTransform();
+    public int unhide(){
+       return backTransform();
+    }
+
+    public int getCountBitRead(){
+        return countBitRead;
     }
 
 }

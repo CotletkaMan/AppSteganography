@@ -9,13 +9,15 @@ import java.awt.*;
 /**
  * Created by cotletkaman on 27.01.16.
  */
-public class ConfigControl extends Control {
-    public void action(Component component , Algorithm algorithm){
+public class ConfigActionControl extends ActionControl {
+    public void runAlgorithm(Component component , Algorithm algorithm){
+        this.setMinimum(0);
+        this.setMaximum(100);
         Consumer consumer = (Consumer)component;
         if(algorithm instanceof ConfigurableAlgorithm) {
             ConfigurableAlgorithm configurableAlgorithm = (ConfigurableAlgorithm)algorithm;
-            String path = configurableAlgorithm.getPath();
             consumer.takeAttributes(new String[]{configurableAlgorithm.getPath()});
         }
+        this.setValue(100);
     }
 }
