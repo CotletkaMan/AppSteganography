@@ -51,7 +51,7 @@ public class LSB extends ConfigurableAlgorithm {
             if(countBit < 0 && countBit > 8)
                 throw new IOException();
         }
-        catch (IOException e){
+        catch (Exception e){
             LOG.info("LSB : Error in property file");
         }
     }
@@ -120,7 +120,8 @@ public class LSB extends ConfigurableAlgorithm {
                 return block.getValue().length;
             }
             else{
-                bitOutput.close();
+                if(!initKey)
+                    bitOutput.close();
                 initKey = false;
             }
         }

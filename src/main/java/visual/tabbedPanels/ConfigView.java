@@ -31,6 +31,7 @@ public class ConfigView extends JTextArea implements Consumer{
 
     private void read(String path){
         try {
+            setText("");
             StringBuffer buffer = new StringBuffer();
             char[] text = new char[capacity];
 
@@ -49,7 +50,7 @@ public class ConfigView extends JTextArea implements Consumer{
     private void write(){
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-            writer.write(this.getText());
+            writer.write(getText().trim());
             writer.close();
         }
         catch(Exception e){

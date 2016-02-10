@@ -16,8 +16,9 @@ public class UnPackActionControl extends ActionControl {
         String[] attrs = producer.getAttributes();
         algorithm.setConteiner(fabricConteiner.getConteiner(attrs[0])).setDestinationPath(attrs[1]);
         this.setMinimum(0);
-        this.setMaximum((int)algorithm.getConteiner().getFile().length());
-        for(int i= 0; algorithm.unhide() > 0 ; i++) {
+        int size = (int)algorithm.getConteiner().getFile().length();
+        this.setMaximum(size);
+        for(int i= 0; algorithm.unhide() != 0 ; i++) {
             if((i + 1) % this.freqency == 0) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
@@ -27,5 +28,6 @@ public class UnPackActionControl extends ActionControl {
                 });
             }
         }
+        this.setValue(size);
     }
 }

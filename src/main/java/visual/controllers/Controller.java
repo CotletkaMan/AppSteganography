@@ -1,5 +1,7 @@
 package visual.controllers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import visual.BottomPanel;
 import visual.controllers.control.ConfigActionControl;
 import visual.controllers.control.ActionControl;
@@ -13,6 +15,8 @@ import java.awt.*;
  * Created by cotletkaman on 27.01.16.
  */
 public class Controller extends JPanel implements ButtonActioner {
+
+    private static Logger log = LogManager.getLogger();
 
     private JTabbedPane tabbedPane;
     private BottomPanel bottomPanel;
@@ -44,6 +48,7 @@ public class Controller extends JPanel implements ButtonActioner {
         new Thread(new Runnable() {
             public void run() {
                 actionControl.runAlgorithm(tabbedPane.getSelectedComponent(), bottomPanel.getSelected());
+                log.info("Complete operation");
             }
         }).start();
 
