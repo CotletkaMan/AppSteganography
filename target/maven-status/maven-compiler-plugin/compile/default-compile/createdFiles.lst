@@ -10,6 +10,8 @@ logic/bitUtils/BufferedBitOutput.class
 logic/conteiner/TypesFiles.class
 visual/controllers/control/PackActionControl.class
 logic/algorithms/ConfigurableAlgorithm.class
+visual/controllers/Controller$1.class
+logic/algorithms/EndedBufferedBitOutput.class
 visual/BottomPanel$3.class
 visual/tabbedPanels/OpeningFile$1.class
 logic/conteiner/WavConteiner$1.class
@@ -20,13 +22,16 @@ logic/conteiner/fabricConteiner$1.class
 visual/controllers/control/ConfigActionControl.class
 logic/algorithms/Configurable.class
 visual/tabbedPanels/Producer.class
+visual/controllers/control/PackActionControl$1.class
 visual/tabbedPanels/ConfigView.class
 logic/conteiner/TypesFiles$1.class
 logic/conteiner/WavConteiner.class
 visual/Main.class
 visual/tabbedPanels/UnPacked.class
 logic/algorithmStore/LSB$1.class
+visual/controllers/control/UnPackActionControl$1.class
 logic/conteiner/fabricConteiner.class
+logic/algorithms/EndedBufferedBitInput.class
 visual/BottomPanel$1.class
 visual/controllers/ButtonActioner.class
 logic/conteiner/TypesFiles$2.class
@@ -35,6 +40,7 @@ logic/conteiner/UnknownConteiner.class
 logic/algorithms/Algorithm.class
 visual/tabbedPanels/OpeningFile.class
 visual/BottomPanel$2.class
+test.class
 visual/tabbedPanels/LogView$1.class
 logic/conteiner/TypeBlocks.class
 logic/algorithmStore/LSB.class
